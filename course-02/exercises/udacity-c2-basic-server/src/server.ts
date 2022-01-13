@@ -68,7 +68,7 @@ import { Car, cars as cars_list } from './cars';
                 .send(`Welcome to the Cloud, ${name}!`);
   } );
 
-  // Get cars. Optionaly filtered by make
+  // Gets cars. Optionaly filtered by make
   app.get("/cars", async (req: Request, res: Response) => {
     const { make } = req.query;
 
@@ -81,9 +81,7 @@ import { Car, cars as cars_list } from './cars';
       .send(filteredCars);
   });
 
-  // @TODO Add an endpoint to get a specific car
-  // it should require id
-  // it should fail gracefully if no matching car is found
+  // Gets car by id 
   app.get("/cars/:carId", async (req: Request, res: Response) => {
     const { carId } = req.params;
 
@@ -110,9 +108,57 @@ import { Car, cars as cars_list } from './cars';
   });
 
 
+  // Adds new car
+  app.post("/cars", async (req: Request, res: Response) => {
+    const { type, make, model, cost } = req.body;
 
-  /// @TODO Add an endpoint to post a new car to our list
-  // it should require id, type, model, and cost
+    const validationErrors: string[] = [];
+
+    if (!type) {
+      validationErrors.push("type is required");
+    }
+
+    if (!make) {
+      validationErrors.push("make is required");
+    }
+
+    if (!model) {
+      validationErrors.push("model is required");
+    }
+
+    let parsedCost;
+    if (!cost) {
+      validationErrors.push("cost is required");
+    } else {
+      parsedCost = +cost;
+  
+      if (parsedCost < 0 || isNaN(parsedCost)) {
+        validationErrors.push("cost have to be positive number");
+      }
+    }
+
+    if (validationErrors.length > 0) {
+      return res
+        .status(400)
+        .send({ validationErrors });
+    }
+
+    const id = Math.max(...cars.map(c => c.id)) + 1;
+
+    console.log(id);
+
+    cars.push({
+      id,
+      type,
+      make,
+      model,
+      cost: parsedCost
+    });
+
+    return res
+      .status(201)
+      .send(id.toString());
+  });
 
   // Start the Server
   app.listen( port, () => {
