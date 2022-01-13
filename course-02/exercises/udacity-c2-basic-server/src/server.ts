@@ -68,8 +68,7 @@ import { Car, cars as cars_list } from './cars';
                 .send(`Welcome to the Cloud, ${name}!`);
   } );
 
-  // @TODO Add an endpoint to GET a list of cars
-  // it should be filterable by make with a query paramater
+  // Get cars. Optionaly filtered by make
   app.get("/cars", async (req: Request, res: Response) => {
     const { make } = req.query;
 
@@ -77,7 +76,7 @@ import { Car, cars as cars_list } from './cars';
       ? cars.filter(c => c.make.toLowerCase() == (<string>make).toLowerCase())
       : cars;
 
-    res
+    return res
       .status(200)
       .send(filteredCars);
   });
@@ -85,6 +84,23 @@ import { Car, cars as cars_list } from './cars';
   // @TODO Add an endpoint to get a specific car
   // it should require id
   // it should fail gracefully if no matching car is found
+  app.get("/cars/:carId", async (req: Request, res: Response) => {
+    const { carId } = req.params;
+
+    const car = cars.find(c => c.id === +carId);
+
+    if (!car) {
+      return res
+        .status(404)
+        .send("car not found!");
+    }
+    
+    return res
+      .status(200)
+      .send(car);
+  });
+
+
 
   /// @TODO Add an endpoint to post a new car to our list
   // it should require id, type, model, and cost
