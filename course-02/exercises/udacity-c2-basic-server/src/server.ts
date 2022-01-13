@@ -87,8 +87,17 @@ import { Car, cars as cars_list } from './cars';
   app.get("/cars/:carId", async (req: Request, res: Response) => {
     const { carId } = req.params;
 
-    const car = cars.find(c => c.id === +carId);
+    
+    const parsedCarId = +carId;
+    
+    if (parsedCarId < 0 || isNaN(parsedCarId) || !!(parsedCarId % 1)) {
+      return res
+        .status(400)
+        .send("wrong carId format!")
+    }
 
+    const car = cars.find(c => c.id === +carId);
+    
     if (!car) {
       return res
         .status(404)
