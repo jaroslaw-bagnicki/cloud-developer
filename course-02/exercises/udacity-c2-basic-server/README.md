@@ -60,3 +60,23 @@ Try creating a method "concat" to concatenate two strings.
 
 5. @TODO `./src/unit-test-examples/units.tests.ts`
 Try creating a new describe block for the "concat" method.
+
+# CLI command to create S3 bucket from Lesson 3
+
+Create bucket with name `udagram-dev-4ik35k`
+
+```bash
+export BUCKET=udagram-dev-4ik35k
+
+# Create bucket
+aws s3api create-bucket --bucket $BUCKET --create-bucket-configuration LocationConstraint=us-east-1
+
+# Set bucket access block
+aws s3api put-public-access-block --bucket $BUCKET --public-access-block-configuration file://s3_access-block.json
+
+# Set bucket CORS
+aws s3api put-bucket-cors --bucket $BUCKET --cors-configuration file://s3_cors.json
+
+# Set bucket encrypion
+aws s3api put-bucket-encryption --bucket $BUCKET --server-side-encryption-configuration file://s3_encryption.json
+```

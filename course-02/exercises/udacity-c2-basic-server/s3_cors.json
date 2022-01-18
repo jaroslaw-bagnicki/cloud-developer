@@ -1,17 +1,19 @@
-[
-    {
-        "AllowedHeaders": [
-            "*"
-        ],
-        "AllowedMethods": [
-            "POST",
-            "GET",
-            "PUT",
-            "DELETE",
-            "HEAD"
-        ],
-        "AllowedOrigins": [
-            "*"
-        ]
-    }
-]
+{
+    "CORSRules": [
+        {
+            "AllowedHeaders": [
+                "*"
+            ],
+            "AllowedMethods": [
+                "POST",
+                "GET",
+                "PUT",
+                "DELETE",
+                "HEAD"
+            ],
+            "AllowedOrigins": [
+                "*"
+            ]
+        }
+    ]
+}
