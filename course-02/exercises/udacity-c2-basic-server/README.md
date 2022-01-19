@@ -63,7 +63,7 @@ Try creating a new describe block for the "concat" method.
 
 # CLI command to create S3 bucket from Lesson 3
 
-Create bucket with name `udagram-dev-4ik35k`
+### Create bucket with name `udagram-dev-4ik35k`
 
 ```bash
 export BUCKET=udagram-dev-4ik35k
@@ -81,14 +81,14 @@ aws s3api put-bucket-cors --bucket $BUCKET --cors-configuration file://s3_cors.j
 aws s3api put-bucket-encryption --bucket $BUCKET --server-side-encryption-configuration file://s3_encryption.json
 ```
 
-Setup IAM `udagram-devs` group
+### Setup IAM `udagram-devs` group
 
 ``` bash
 # Validating policy document
-aws accessanalyzer validate-policy --policy-document file://media-bucket-access-policy.json --policy-type IDENTITY_POLICY
+aws accessanalyzer validate-policy --policy-document file://iam_media-bucket-access-policy.json --policy-type IDENTITY_POLICY
 
 # Create IAM policy with access to bucket
-aws iam create-policy --policy-name UdagramMediaBucketFullAccessPolicy --policy-document file://media-bucket-access-policy.json
+aws iam create-policy --policy-name UdagramMediaBucketFullAccessPolicy --policy-document file://iam_media-bucket-access-policy.json
 
 ------------------------------------------------------------------------------------------------------------
 |                                               CreatePolicy                                               |
@@ -108,7 +108,7 @@ aws iam create-policy --policy-name UdagramMediaBucketFullAccessPolicy --policy-
 |+--------------------------------+-----------------------------------------------------------------------+|
 
 # Update policy
-aws iam create-policy-version --policy-arn arn:aws:iam::108792290315:policy/UdagramMediaBucketFullAccessPolicy --policy-document file://media-bucket-access-policy.json --set-as-default
+aws iam create-policy-version --policy-arn arn:aws:iam::108792290315:policy/UdagramMediaBucketFullAccessPolicy --policy-document file://iam_media-bucket-access-policy.json --set-as-default
 
 ------------------------------------------------------------------
 |                       CreatePolicyVersion                      |
@@ -136,3 +136,34 @@ aws iam create-group --group-name UdagramDevs
 # Attach policy to group
 aws iam attach-group-policy --group-name UdagramDevs --policy-arn arn:aws:iam::108792290315:policy/UdagramMediaBucketFullAccessPolicy
 ```
+
+### Setup user role
+
+```bash
+aws iam create-role --role-name UdagramTestRole --assume-role-policy-document file://iam_test-trust-policy.json
+
+---------------------------------------------------------------------------------------------------------------------------------------
+|                                                             CreateRole                                                              |
++-------------------------------------------------------------------------------------------------------------------------------------+
+||                                                               Role                                                                ||
+|+-------------------------------------------------+----------------------------+-------+------------------------+-------------------+|
+||                       Arn                       |        CreateDate          | Path  |        RoleId          |     RoleName      ||
+|+-------------------------------------------------+----------------------------+-------+------------------------+-------------------+|
+||  arn:aws:iam::108792290315:role/UdagramTestRole |  2022-01-19T06:59:10+00:00 |  /    |  AROARSVEGTQF3YH7PJZWG |  UdagramTestRole  ||
+|+-------------------------------------------------+----------------------------+-------+------------------------+-------------------+|
+|||                                                    AssumeRolePolicyDocument                                                     |||
+||+--------------------------------------------------------+------------------------------------------------------------------------+||
+|||  Version                                               |  2012-10-17                                                            |||
+||+--------------------------------------------------------+------------------------------------------------------------------------+||
+||||                                                           Statement                                                           ||||
+|||+---------------------------------------------------------------------------------+---------------------------------------------+|||
+||||                                     Action                                      |                   Effect                    ||||
+|||+---------------------------------------------------------------------------------+---------------------------------------------+|||
+||||  sts:AssumeRole                                                                 |  Allow                                      ||||
+|||+---------------------------------------------------------------------------------+---------------------------------------------+|||
+|||||                                                          Principal                                                          |||||
+||||+----------------+------------------------------------------------------------------------------------------------------------+||||
+|||||  AWS           |  arn:aws:iam::108792290315:role/voclabs                                                                    |||||
+||||+----------------+------------------------------------------------------------------------------------------------------------+||||
+```
+[`iam_test-trust-policy.json`](./iam_test-trust-policy.json)
