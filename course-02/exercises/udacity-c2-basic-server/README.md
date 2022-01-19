@@ -140,6 +140,8 @@ aws iam attach-group-policy --group-name UdagramDevs --policy-arn arn:aws:iam::1
 ### Setup user role
 
 ```bash
+
+# Create role
 aws iam create-role --role-name UdagramTestRole --assume-role-policy-document file://iam_test-trust-policy.json
 
 ---------------------------------------------------------------------------------------------------------------------------------------
@@ -165,5 +167,24 @@ aws iam create-role --role-name UdagramTestRole --assume-role-policy-document fi
 ||||+----------------+------------------------------------------------------------------------------------------------------------+||||
 |||||  AWS           |  arn:aws:iam::108792290315:role/voclabs                                                                    |||||
 ||||+----------------+------------------------------------------------------------------------------------------------------------+||||
+
+# Attach policy to role
+aws iam attach-role-policy --role-name UdagramTestRole --policy-arn arn:aws:iam::108792290315:policy/UdagramMediaBucketFullAccessPolicy
+
+# Assume role
+aws sts assume-role --role-arn arn:aws:iam::108792290315:role/UdagramTestRole --role-session-name TestRoleSession --output json
+
+{
+    "Credentials": {
+        "AccessKeyId": "ASIARSVEGTQFSLAECMEH",
+        "SecretAccessKey": "tc2Cei6wXhi9GChTab5XewxACxDPhptKF9+59IO3",
+        "SessionToken": "IQoJb3JpZ2luX2VjEM///////////wEaCXVzL...",
+        "Expiration": "2022-01-19T08:03:04+00:00"
+    },
+    "AssumedRoleUser": {
+        "AssumedRoleId": "AROARSVEGTQF3YH7PJZWG:test",
+        "Arn": "arn:aws:sts::108792290315:assumed-role/UdagramTestRole/test"
+    }
+}
 ```
 [`iam_test-trust-policy.json`](./iam_test-trust-policy.json)
