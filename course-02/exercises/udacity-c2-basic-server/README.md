@@ -80,3 +80,59 @@ aws s3api put-bucket-cors --bucket $BUCKET --cors-configuration file://s3_cors.j
 # Set bucket encrypion
 aws s3api put-bucket-encryption --bucket $BUCKET --server-side-encryption-configuration file://s3_encryption.json
 ```
+
+Setup IAM `udagram-devs` group
+
+``` bash
+# Validating policy document
+aws accessanalyzer validate-policy --policy-document file://media-bucket-access-policy.json --policy-type IDENTITY_POLICY
+
+# Create IAM policy with access to bucket
+aws iam create-policy --policy-name UdagramMediaBucketFullAccessPolicy --policy-document file://media-bucket-access-policy.json
+
+------------------------------------------------------------------------------------------------------------
+|                                               CreatePolicy                                               |
++----------------------------------------------------------------------------------------------------------+
+||                                                 Policy                                                 ||
+|+--------------------------------+-----------------------------------------------------------------------+|
+||  Arn                           |  arn:aws:iam::108792290315:policy/UdagramMediaBucketFullAccessPolicy  ||
+||  AttachmentCount               |  0                                                                    ||
+||  CreateDate                    |  2022-01-18T08:42:06+00:00                                            ||
+||  DefaultVersionId              |  v1                                                                   ||
+||  IsAttachable                  |  True                                                                 ||
+||  Path                          |  /                                                                    ||
+||  PermissionsBoundaryUsageCount |  0                                                                    ||
+||  PolicyId                      |  ANPARSVEGTQF34HK4FFBR                                                ||
+||  PolicyName                    |  UdagramMediaBucketFullAccessPolicy                                   ||
+||  UpdateDate                    |  2022-01-18T08:42:06+00:00                                            ||
+|+--------------------------------+-----------------------------------------------------------------------+|
+
+# Update policy
+aws iam create-policy-version --policy-arn arn:aws:iam::108792290315:policy/UdagramMediaBucketFullAccessPolicy --policy-document file://media-bucket-access-policy.json --set-as-default
+
+------------------------------------------------------------------
+|                       CreatePolicyVersion                      |
++----------------------------------------------------------------+
+||                         PolicyVersion                        ||
+|+----------------------------+--------------------+------------+|
+||         CreateDate         | IsDefaultVersion   | VersionId  ||
+|+----------------------------+--------------------+------------+|
+||  2022-01-18T09:05:44+00:00 |  True              |  v2        ||
+|+----------------------------+--------------------+------------+|
+
+# Create IAM group
+aws iam create-group --group-name UdagramDevs
+
+--------------------------------------------------------------------------------------------------------------------------------
+|                                                          CreateGroup                                                         |
++------------------------------------------------------------------------------------------------------------------------------+
+||                                                            Group                                                           ||
+|+----------------------------------------------+----------------------------+------------------------+--------------+--------+|
+||                      Arn                     |        CreateDate          |        GroupId         |  GroupName   | Path   ||
+|+----------------------------------------------+----------------------------+------------------------+--------------+--------+|
+||  arn:aws:iam::108792290315:group/UdagramDevs |  2022-01-18T08:46:05+00:00 |  AGPARSVEGTQF5LZTF6BJ7 |  UdagramDevs |  /     ||
+|+----------------------------------------------+----------------------------+------------------------+--------------+--------+|
+
+# Attach policy to group
+aws iam attach-group-policy --group-name UdagramDevs --policy-arn arn:aws:iam::108792290315:policy/UdagramMediaBucketFullAccessPolicy
+```
