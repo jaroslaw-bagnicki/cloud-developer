@@ -34,9 +34,20 @@ router.get('/:id',
 // update a specific resource
 router.patch('/:id', 
     requireAuth, 
-    async (req: Request, res: Response) => {
-        //@TODO try it yourself
-        res.send(500).send("not implemented")
+    async function updateFeed(req: Request, res: Response) {
+        const id = req.params['id'];
+        const feed = await FeedItem.findByPk(id);
+
+        if (!feed)
+        {
+            return res.status(400).send("Feed with such id not exist!");
+        }
+
+        feed.caption = req.body.caption;
+        feed.url = req.body.url;
+        feed.save();
+
+        res.send(200);
 });
 
 
