@@ -37,3 +37,14 @@ npm run dev
 
 Developer mode runs off the TypeScript source. Any saves will reset the server and run the latest version of the codebase. 
 
+## Attaching policy to group using CLI
+
+```bash
+aws iam attach-group-policy --group-name UdagramDevs --policy-arn arn:aws:iam::aws:policy/AdministratorAccess-AWSElasticBeanstalk
+
+# Helper commands
+aws iam list-policies --query 'Policies[?contains(PolicyName,`Beanstalk`)].[PolicyName,Arn]'
+aws iam list-groups
+aws iam list-attached-group-policies --group-name UdagramDevs
+```
+
