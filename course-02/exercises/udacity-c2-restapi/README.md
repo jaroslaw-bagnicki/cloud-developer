@@ -93,3 +93,9 @@ aws ssm put-parameter --name /udagram/dev/web/db/password --type SecureString --
 aws ssm put-parameter --name /udagram/dev/web/filestore/bucket --type String --value udagram-dev-******
 aws ssm get-parameters-by-path --path /udagram/ --recursive
 ```
+
+## Enhance EC2 service role with read access to SSM ParameterStore
+```bash
+aws iam create-policy --policy-name UdagramConfigurationGetAccess --policy-document file://ssm_application-config-get-get-access.json
+aws iam attach-role-policy --role-name UdagramWebServerRole --policy-arn arn:aws:iam::108792290315:policy/UdagramConfigurationGetAccess
+```
