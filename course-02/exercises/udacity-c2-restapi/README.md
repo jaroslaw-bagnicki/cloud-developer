@@ -83,3 +83,13 @@ aws iam add-role-to-instance-profile --instance-profile-name UdagramWebServerIns
 aws iam get-instance-profile --instance-profile-name UdagramWebServerInstanceProfile
 aws iam list-instance-profiles --path-prefix /udagram/
 ```
+
+## Move secrets and other sensitive variables to SSM Parameter store
+```bash
+aws ssm put-parameter --name /udagram/dev/web/db/host --type String --value ******.us-east-1.rds.amazonaws.com
+aws ssm put-parameter --name /udagram/dev/web/db/dbname --type String --value postgres
+aws ssm put-parameter --name /udagram/dev/web/db/username --type String --value postgres
+aws ssm put-parameter --name /udagram/dev/web/db/password --type SecureString --value **********************
+aws ssm put-parameter --name /udagram/dev/web/filestore/bucket --type String --value udagram-dev-******
+aws ssm get-parameters-by-path --path /udagram/ --recursive
+```
