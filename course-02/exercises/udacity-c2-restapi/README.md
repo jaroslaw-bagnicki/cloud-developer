@@ -69,4 +69,17 @@ npm run build
 
 # Deploying new version of appliaction
 eb deploy
+
+# Retrieve EB Enironment URL based on environment name
+aws elasticbeanstalk describe-environments --query 'Environments[?EnvironmentName==`udagram-dev`].[CNAME]'
+```
+
+## Create IAM role for EC2 instance
+```bash
+aws iam create-role --role-name UdagramWebServerRole --assume-role-policy-document file://iam_ec2-trust-policy.json --path /udagram/
+aws iam attach-role-policy --role-name UdagramWebServerRole --policy-arn arn:aws:iam::108792290315:policy/UdagramMediaBucketFullAccessPolicy
+aws iam create-instance-profile --instance-profile-name UdagramWebServerInstanceProfile --path /udagram/
+aws iam add-role-to-instance-profile --instance-profile-name UdagramWebServerInstanceProfile --role-name UdagramWebServerRole
+aws iam get-instance-profile --instance-profile-name UdagramWebServerInstanceProfile
+aws iam list-instance-profiles --path-prefix /udagram/
 ```

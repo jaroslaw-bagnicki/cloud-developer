@@ -14,7 +14,7 @@ global:
   default_platform: Node.js 14 running on 64bit Amazon Linux 2
   default_region: us-east-1
   include_git_submodules: true
-  instance_profile: null
+  instance_profile: UdagramWebServerInstanceProfile
   platform_name: null
   platform_version: null
   profile: udacity
