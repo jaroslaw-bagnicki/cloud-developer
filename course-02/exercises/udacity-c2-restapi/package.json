@@ -7,9 +7,8 @@
     "start": "node .",
     "tsc": "tsc",
     "dev": "ts-node-dev ./src/server.ts",
-    "prod": "tsc && node ./www/server.js",
-    "clean": "rimraf www/ || true",
-    "build": "npm run clean && tsc && cp -rf src/config www/config && cp .npmrc www/.npmrc && cp package.json www/package.json && cd www && zip -r archive.zip . && cd ..",
+    "prod": "tsc && node ./build/server.js",
+    "build": "./build.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
