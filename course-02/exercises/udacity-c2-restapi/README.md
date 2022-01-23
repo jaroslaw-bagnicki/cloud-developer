@@ -48,3 +48,12 @@ aws iam list-groups
 aws iam list-attached-group-policies --group-name UdagramDevs
 ```
 
+## Getting info about instances
+
+Get list offered instances base on regon and instance family
+```bash
+aws ec2 describe-instance-type-offerings \
+    --region us-east-1 \
+    --filters 'Name=instance-type,Values=t*' \
+    --query 'InstanceTypeOfferings[].InstanceType'
+```
