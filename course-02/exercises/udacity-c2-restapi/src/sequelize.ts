@@ -1,17 +1,16 @@
-import {Sequelize} from 'sequelize-typescript';
-import { config } from './config/config';
-
-
-const c = config.dev;
+import { Sequelize } from 'sequelize-typescript';
+import { getConfiguration } from './config/configurationProvider';
 
 // Instantiate new Sequelize instance!
-export const sequelize = new Sequelize({
-  "username": c.username,
-  "password": c.password,
-  "database": c.database,
-  "host":     c.host,
-
-  dialect: 'postgres',
-  storage: ':memory:',
-});
+export const getSequelize = async () => {
+  const config = await getConfiguration();
+  return new Sequelize({
+    "host": config.db.host,
+    "database": config.db.database,
+    "username": config.db.username,
+    "password": config.db.password,
+    dialect: 'postgres',
+    storage: ':memory:',
+  });
+}
 

@@ -1,18 +1,14 @@
 import AWS = require('aws-sdk');
-import { config } from './config/config';
-
-const c = config.dev;
+import { getConfiguration } from './config/configurationProvider';
 
 //Configure AWS
-if(c.aws_profile !== "DEPLOYED") {
-  var credentials = new AWS.SharedIniFileCredentials({ profile: c.aws_profile });
+if(process.env.AWS_PROFILE !== "DEPLOYED") {
+  var credentials = new AWS.SharedIniFileCredentials({ profile: process.env.AWS_PROFILE });
   AWS.config.credentials = credentials;
 }
-
 export const s3 = new AWS.S3({
   signatureVersion: 'v4',
-  region: c.aws_region,
-  params: {Bucket: c.aws_media_bucket}
+  region: process.env.AWS_REGION,
 });
 
 
@@ -22,17 +18,19 @@ export const s3 = new AWS.S3({
  * @Returns:
  *    a url as a string
  */
-export function getGetSignedUrl( key: string ): string{
+export async function getGetSignedUrl( key: string ): Promise<string> {
 
-  const signedUrlExpireSeconds = 60 * 5
+    const signedUrlExpireSeconds = 60 * 5;
+
+    const c = await getConfiguration();
 
     const url = s3.getSignedUrl('getObject', {
-        Bucket: c.aws_media_bucket,
-        Key: key,
-        Expires: signedUrlExpireSeconds
-      });
+      Bucket: c.filestore.aws_media_bucket,
+      Key: key,
+      Expires: signedUrlExpireSeconds
+    });
 
-    return url;
+  return url;
 }
 
 /* getPutSignedUrl generates an aws signed url to put an item
@@ -41,12 +39,14 @@ export function getGetSignedUrl( key: string ): string{
  * @Returns:
  *    a url as a string
  */
-export function getPutSignedUrl( key: string ){
+export async function getPutSignedUrl(key: string): Promise<string> {
 
-    const signedUrlExpireSeconds = 60 * 5
+    const c = await getConfiguration();
+  
+    const signedUrlExpireSeconds = 60 * 5;
 
     const url = s3.getSignedUrl('putObject', {
-      Bucket: c.aws_media_bucket,
+      Bucket: c.filestore.aws_media_bucket,
       Key: key,
       Expires: signedUrlExpireSeconds
     });
