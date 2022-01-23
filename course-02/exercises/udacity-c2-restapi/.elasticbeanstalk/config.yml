@@ -2,10 +2,13 @@ branch-defaults:
   default:
     environment: udagram-dev
     group_suffix: null
+  develop:
+    environment: udagram-dev
+    group_suffix: null
 deploy:
-  artifact: ./www/archive.zip
+  artifact: ./build/archive.zip
 global:
-  application_name: udagram-dev
+  application_name: udagram
   branch: null
   default_ec2_keyname: udagram-dev
   default_platform: Node.js 14 running on 64bit Amazon Linux 2

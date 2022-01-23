@@ -57,3 +57,16 @@ aws ec2 describe-instance-type-offerings \
     --filters 'Name=instance-type,Values=t*' \
     --query 'InstanceTypeOfferings[].InstanceType'
 ```
+
+## Elastic Beanstalk
+Updating **Elastic Beanstalk** environment configuration: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-configuration-methods-after.html#configuration-options-after-ebcli
+
+
+## Deploying application to Elastic Beanstalk
+```bash
+# Building EB artifact
+npm run build
+
+# Deploying new version of appliaction
+eb deploy
+```
