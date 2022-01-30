@@ -8,9 +8,9 @@ const router: Router = Router();
 // Get all feed items
 router.get('/', async (req: Request, res: Response) => {
     const items = await FeedItem.findAndCountAll({order: [['id', 'DESC']]});
-    items.rows.map((item) => {
-            if(item.url) {
-                item.url = AWS.getGetSignedUrl(item.url);
+    items.rows.map(async (item) => {
+            if (item.url) {
+                item.url = await AWS.getGetSignedUrl(item.url);
             }
     });
     res.send(items);
