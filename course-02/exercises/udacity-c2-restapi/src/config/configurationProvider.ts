@@ -14,7 +14,7 @@ const getValueFromSsm = async (key: string): Promise<string> => ssm
     return data?.Parameter?.Value;
   })
   .catch(err => {
-    if (err.code = 'ParameterNotFound') {
+    if (err.code === 'ParameterNotFound') {
       console.error(`Paramater: '${keyPrefix + key}' not found!`);
     } else {
       console.error(err.message);
