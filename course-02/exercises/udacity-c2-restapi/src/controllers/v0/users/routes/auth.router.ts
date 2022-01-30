@@ -27,27 +27,25 @@ async function generateJWT(user: User): Promise<string> {
     return jwt.sign({ email: user.email }, config.jwt.secret);
 }
 
-export function requireAuth(req: Request, res: Response, next: NextFunction) {
-    console.warn('auth.router not yet implemented, you\'ll cover this in lesson 5');
-    return next();
-    // if (!req.headers || !req.headers.authorization){
-    //     return res.status(401).send({ message: 'No authorization headers.' });
-    // }
+export async function requireAuth(req: Request, res: Response, next: NextFunction) {
+    if (!req.headers || !req.headers.authorization) {
+        return res.status(401).send({ message: 'No authorization headers.' });
+    }
 
 
-    // const token_bearer = req.headers.authorization.split(' ');
-    // if(token_bearer.length != 2){
-    //     return res.status(401).send({ message: 'Malformed token.' });
-    // }
+    if (!req.headers.authorization.startsWith('Bearer ')) {
+        return res.status(401).send({ message: 'Malformed token.' });
+    }
 
-    // const token = token_bearer[1];
+    const token = req.headers.authorization.split(' ')[1];
+    const config = await getConfiguration();
 
-    // return jwt.verify(token, "hello", (err, decoded) => {
-    //   if (err) {
-    //     return res.status(500).send({ auth: false, message: 'Failed to authenticate.' });
-    //   }
-    //   return next();
-    // });
+    return jwt.verify(token, config.jwt.secret, (err, decoded) => {
+      if (err) {
+        return res.status(500).send({ auth: false, message: 'Failed to authenticate.' });
+      }
+      return next();
+    });
 }
 
 router.get('/verification',
