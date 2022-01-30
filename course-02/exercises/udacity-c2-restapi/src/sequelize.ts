@@ -5,12 +5,12 @@ import { getConfiguration } from './config/configurationProvider';
 export const getSequelize = async () => {
   const config = await getConfiguration();
   return new Sequelize({
-    "host": config.db.host,
-    "database": config.db.database,
-    "username": config.db.username,
-    "password": config.db.password,
+    'host': config.db.host,
+    'database': config.db.database,
+    'username': config.db.username,
+    'password': config.db.password,
     dialect: 'postgres',
     storage: ':memory:',
   });
-}
+};
 

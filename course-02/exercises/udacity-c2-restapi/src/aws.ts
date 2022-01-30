@@ -1,9 +1,9 @@
 import AWS = require('aws-sdk');
 import { getConfiguration } from './config/configurationProvider';
 
-//Configure AWS
-if(process.env.AWS_PROFILE !== "DEPLOYED") {
-  var credentials = new AWS.SharedIniFileCredentials({ profile: process.env.AWS_PROFILE });
+// Configure AWS
+if (process.env.AWS_PROFILE !== 'DEPLOYED') {
+  const credentials = new AWS.SharedIniFileCredentials({ profile: process.env.AWS_PROFILE });
   AWS.config.credentials = credentials;
 }
 export const s3 = new AWS.S3({
@@ -42,7 +42,7 @@ export async function getGetSignedUrl( key: string ): Promise<string> {
 export async function getPutSignedUrl(key: string): Promise<string> {
 
     const c = await getConfiguration();
-  
+
     const signedUrlExpireSeconds = 60 * 5;
 
     const url = s3.getSignedUrl('putObject', {
