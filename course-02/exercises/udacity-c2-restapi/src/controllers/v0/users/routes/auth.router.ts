@@ -7,6 +7,7 @@ import * as jwt from 'jsonwebtoken';
 import { NextFunction } from 'connect';
 
 import * as EmailValidator from 'email-validator';
+import { getConfiguration } from '../../../../config/configurationProvider';
 
 const router: Router = Router();
 
@@ -20,9 +21,10 @@ async function comparePasswords(plainTextPassword: string, hash: string): Promis
     return bcrypt.compare(plainTextPassword, hash);
 }
 
-function generateJWT(user: User): string {
-    // @TODO Use jwt to create a new JWT Payload containing
-    return 'NotYetImplemented';
+async function generateJWT(user: User): Promise<string> {
+    const config = await getConfiguration();
+    const userSerilized = user.toJSON();
+    return jwt.sign({ email: user.email }, config.jwt.secret);
 }
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
@@ -81,9 +83,9 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 
     // Generate JWT
-    const token = generateJWT(user);
+    const token = await generateJWT(user);
 
-    res.status(200).send({ auth: true, token: jwt, user: user.short()});
+    res.status(200).send({ auth: true, token, user: user.short()});
 });
 
 // register a new user
@@ -122,9 +124,9 @@ router.post('/', async (req: Request, res: Response) => {
     }
 
     // Generate JWT
-    const token = generateJWT(savedUser);
+    const token = await generateJWT(savedUser);
 
-    res.status(201).send({token: token, user: savedUser.short()});
+    res.status(201).send({token, user: savedUser.short()});
 });
 
 router.get('/', async (req: Request, res: Response) => {
