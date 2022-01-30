@@ -11,13 +11,13 @@ import * as EmailValidator from 'email-validator';
 const router: Router = Router();
 
 async function generatePassword(plainTextPassword: string): Promise<string> {
-    // @TODO Use Bcrypt to Generated Salted Hashed Passwords
-    return 'NotYetImplemented';
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(plainTextPassword, salt);
+    return hashedPassword;
 }
 
 async function comparePasswords(plainTextPassword: string, hash: string): Promise<boolean> {
-    // @TODO Use Bcrypt to Compare your password to your Salted Hashed Password
-    return true;
+    return bcrypt.compare(plainTextPassword, hash);
 }
 
 function generateJWT(user: User): string {
