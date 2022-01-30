@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node .",
     "tsc": "tsc",
+    "lint": "tslint --project ./tsconfig.json --config ./tslint.json",
     "dev": "ts-node-dev ./src/server.ts",
     "prod": "tsc && node ./build/server.js",
     "build": "./build.sh",
@@ -37,6 +38,7 @@
     "@types/validator": "^10.11.3",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "codelyzer": "^6.0.2",
     "mocha": "^6.2.3",
     "rimraf": "^3.0.2",
     "ts-node-dev": "^1.1.1",
