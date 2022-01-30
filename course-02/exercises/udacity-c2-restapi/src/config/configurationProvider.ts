@@ -1,32 +1,42 @@
 import AWS = require('aws-sdk');
 
 const ssm = new AWS.SSM();
+const keyPrefix = `/${process.env.APP_NAME}/${process.env.STAGE}/${process.env.SERVICE_NAME}`;
 
 const getValueFromSsm = async (key: string): Promise<string> => ssm
-  .getParameter({ Name: key })
+  .getParameter({ Name: keyPrefix + key })
   .promise()
   .then(result => {
-    if (!result.$response.error) {
-      if (!result.$response.data) {
-        throw new Error('Paramater not found!');
-      }
-
-      const data = <AWS.SSM.GetParameterResult>(result.$response.data);
-      return data?.Parameter?.Value;
+    if (result.$response.error) {
+      throw new Error(result.$response.error.message);
     }
-    throw result.$response.error.message;
+    const data = <AWS.SSM.GetParameterResult>(result.$response.data);
+    return data?.Parameter?.Value;
+  })
+  .catch(err => {
+    if (err.code = 'ParameterNotFound') {
+      console.error(`Paramater: '${keyPrefix + key}' not found!`);
+    } else {
+      console.error(err.message);
+    }
+    return null;
   });
 
-export const getConfiguration = async () => ({
-  'db': {
-    'host': await getValueFromSsm(process.env.POSTGRES_HOST_KEY),
-    'database': await getValueFromSsm(process.env.POSTGRES_DATABASE_KEY),
-    'username': await getValueFromSsm(process.env.POSTGRES_USERNAME_KEY),
-    'password': await getValueFromSsm(process.env.POSTGRES_PASSWORD_KEY),
-  },
-  'filestore': {
-    'aws_media_bucket': await getValueFromSsm(process.env.AWS_MEDIA_BUCKET_KEY),
-    'aws_region': process.env.AWS_REGION,
-  },
-  'aws_profile': process.env.AWS_PROFILE,
-});
+export const getConfiguration = async () => {
+  return {
+    'aws_profile': process.env.AWS_PROFILE,
+    'db': {
+      'host': await getValueFromSsm('/db/host'),
+      'database': await getValueFromSsm('/db/dbname'),
+      'username': await getValueFromSsm('/db/username'),
+      'password': await getValueFromSsm('/db/password'),
+    },
+    'filestore': {
+      'aws_media_bucket': await getValueFromSsm('/filestore/bucket'),
+      'aws_region': process.env.AWS_REGION,
+    },
+    'jwt': {
+      'secret': await getValueFromSsm('/jwt/secret'),
+    }
+  };
+};
