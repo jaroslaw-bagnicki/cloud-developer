@@ -4,48 +4,26 @@ import { User } from '../models/User';
 
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { NextFunction } from 'connect';
 
 import * as EmailValidator from 'email-validator';
+import { getConfiguration } from '../../../../config/configurationProvider';
+import { requireAuth } from '../../../../middlewares/requireAuth';
 
 const router: Router = Router();
 
 async function generatePassword(plainTextPassword: string): Promise<string> {
-    // @TODO Use Bcrypt to Generated Salted Hashed Passwords
-    return 'NotYetImplemented';
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(plainTextPassword, salt);
+    return hashedPassword;
 }
 
 async function comparePasswords(plainTextPassword: string, hash: string): Promise<boolean> {
-    // @TODO Use Bcrypt to Compare your password to your Salted Hashed Password
-    return true;
+    return bcrypt.compare(plainTextPassword, hash);
 }
 
-function generateJWT(user: User): string {
-    // @TODO Use jwt to create a new JWT Payload containing
-    return 'NotYetImplemented';
-}
-
-export function requireAuth(req: Request, res: Response, next: NextFunction) {
-    console.warn('auth.router not yet implemented, you\'ll cover this in lesson 5');
-    return next();
-    // if (!req.headers || !req.headers.authorization){
-    //     return res.status(401).send({ message: 'No authorization headers.' });
-    // }
-
-
-    // const token_bearer = req.headers.authorization.split(' ');
-    // if(token_bearer.length != 2){
-    //     return res.status(401).send({ message: 'Malformed token.' });
-    // }
-
-    // const token = token_bearer[1];
-
-    // return jwt.verify(token, "hello", (err, decoded) => {
-    //   if (err) {
-    //     return res.status(500).send({ auth: false, message: 'Failed to authenticate.' });
-    //   }
-    //   return next();
-    // });
+async function generateJWT(user: User): Promise<string> {
+    const config = await getConfiguration();
+    return jwt.sign({ email: user.email }, config.jwt.secret);
 }
 
 router.get('/verification',
@@ -81,9 +59,9 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 
     // Generate JWT
-    const token = generateJWT(user);
+    const token = await generateJWT(user);
 
-    res.status(200).send({ auth: true, token: jwt, user: user.short()});
+    res.status(200).send({ auth: true, token, user: user.short()});
 });
 
 // register a new user
@@ -122,9 +100,9 @@ router.post('/', async (req: Request, res: Response) => {
     }
 
     // Generate JWT
-    const token = generateJWT(savedUser);
+    const token = await generateJWT(savedUser);
 
-    res.status(201).send({token: token, user: savedUser.short()});
+    res.status(201).send({token, user: savedUser.short()});
 });
 
 router.get('/', async (req: Request, res: Response) => {

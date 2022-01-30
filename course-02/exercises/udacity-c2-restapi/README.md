@@ -86,12 +86,20 @@ aws iam list-instance-profiles --path-prefix /udagram/
 
 ## Move secrets and other sensitive variables to SSM Parameter store
 ```bash
+# Set parameter value
 aws ssm put-parameter --name /udagram/dev/web/db/host --type String --value ******.us-east-1.rds.amazonaws.com
-aws ssm put-parameter --name /udagram/dev/web/db/dbname --type String --value postgres
-aws ssm put-parameter --name /udagram/dev/web/db/username --type String --value postgres
-aws ssm put-parameter --name /udagram/dev/web/db/password --type SecureString --value **********************
-aws ssm put-parameter --name /udagram/dev/web/filestore/bucket --type String --value udagram-dev-******
-aws ssm get-parameters-by-path --path /udagram/ --recursive
+
+# Get parameters and values by key prefix
+aws ssm get-parameters-by-path --path /udagram/ --recursive --query 'Parameters[].[Name,Value]'
+```
+### List of configuration keys used by application
+```
+/udagram/dev/web/db/host
+/udagram/dev/web/db/dbname
+/udagram/dev/web/db/username
+/udagram/dev/web/db/password
+/udagram/dev/web/filestore/bucket
+/udagram/dev/web/jwt/secret
 ```
 
 ## Enhance EC2 service role with read access to SSM ParameterStore
