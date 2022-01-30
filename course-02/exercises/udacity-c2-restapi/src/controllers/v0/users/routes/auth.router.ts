@@ -81,7 +81,7 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 
     // Generate JWT
-    const jwt = generateJWT(user);
+    const token = generateJWT(user);
 
     res.status(200).send({ auth: true, token: jwt, user: user.short()});
 });
@@ -122,9 +122,9 @@ router.post('/', async (req: Request, res: Response) => {
     }
 
     // Generate JWT
-    const jwt = generateJWT(savedUser);
+    const token = generateJWT(savedUser);
 
-    res.status(201).send({token: jwt, user: savedUser.short()});
+    res.status(201).send({token: token, user: savedUser.short()});
 });
 
 router.get('/', async (req: Request, res: Response) => {
