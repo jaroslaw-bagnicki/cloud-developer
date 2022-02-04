@@ -52,3 +52,9 @@ ionic build
         b. NPM, Ionic CLI
         c. run tests (npm test), identify broken function, fix the function
         d. write tests for form validation and re-run tests
+
+
+## Sync static files with bucket
+```bash
+aws s3 sync www s3://udagram-dev-front-5lupwd
+```

@@ -37,3 +37,73 @@ npm run dev
 
 Developer mode runs off the TypeScript source. Any saves will reset the server and run the latest version of the codebase. 
 
+## Attaching policy to group using CLI
+
+```bash
+aws iam attach-group-policy --group-name UdagramDevs --policy-arn arn:aws:iam::aws:policy/AdministratorAccess-AWSElasticBeanstalk
+
+# Helper commands
+aws iam list-policies --query 'Policies[?contains(PolicyName,`Beanstalk`)].[PolicyName,Arn]'
+aws iam list-groups
+aws iam list-attached-group-policies --group-name UdagramDevs
+```
+
+## Getting info about instances
+
+Get list offered instances base on regon and instance family
+```bash
+aws ec2 describe-instance-type-offerings \
+    --region us-east-1 \
+    --filters 'Name=instance-type,Values=t*' \
+    --query 'InstanceTypeOfferings[].InstanceType'
+```
+
+## Elastic Beanstalk
+Updating **Elastic Beanstalk** environment configuration: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-configuration-methods-after.html#configuration-options-after-ebcli
+
+
+## Deploying application to Elastic Beanstalk
+```bash
+# Building EB artifact
+npm run build
+
+# Deploying new version of appliaction
+eb deploy
+
+# Retrieve EB Enironment URL based on environment name
+aws elasticbeanstalk describe-environments --query 'Environments[?EnvironmentName==`udagram-dev`].[CNAME]'
+```
+
+## Create IAM role for EC2 instance
+```bash
+aws iam create-role --role-name UdagramWebServerRole --assume-role-policy-document file://iam_ec2-trust-policy.json --path /udagram/
+aws iam attach-role-policy --role-name UdagramWebServerRole --policy-arn arn:aws:iam::108792290315:policy/UdagramMediaBucketFullAccessPolicy
+aws iam create-instance-profile --instance-profile-name UdagramWebServerInstanceProfile --path /udagram/
+aws iam add-role-to-instance-profile --instance-profile-name UdagramWebServerInstanceProfile --role-name UdagramWebServerRole
+aws iam get-instance-profile --instance-profile-name UdagramWebServerInstanceProfile
+aws iam list-instance-profiles --path-prefix /udagram/
+```
+
+## Move secrets and other sensitive variables to SSM Parameter store
+```bash
+# Set parameter value
+aws ssm put-parameter --name /udagram/dev/web/db/host --type String --value ******.us-east-1.rds.amazonaws.com
+
+# Get parameters and values by key prefix
+aws ssm get-parameters-by-path --path /udagram/ --recursive --query 'Parameters[].[Name,Value]'
+```
+### List of configuration keys used by application
+```
+/udagram/dev/web/db/host
+/udagram/dev/web/db/dbname
+/udagram/dev/web/db/username
+/udagram/dev/web/db/password
+/udagram/dev/web/filestore/bucket
+/udagram/dev/web/jwt/secret
+```
+
+## Enhance EC2 service role with read access to SSM ParameterStore
+```bash
+aws iam create-policy --policy-name UdagramConfigurationGetAccess --policy-document file://ssm_application-config-get-get-access.json
+aws iam attach-role-policy --role-name UdagramWebServerRole --policy-arn arn:aws:iam::108792290315:policy/UdagramConfigurationGetAccess
+```

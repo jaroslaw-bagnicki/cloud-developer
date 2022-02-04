@@ -1,0 +1,23 @@
+branch-defaults:
+  default:
+    environment: udagram-dev
+    group_suffix: null
+  develop:
+    environment: udagram-dev
+    group_suffix: null
+deploy:
+  artifact: ./build/archive.zip
+global:
+  application_name: udagram
+  branch: null
+  default_ec2_keyname: udagram-dev
+  default_platform: Node.js 14 running on 64bit Amazon Linux 2
+  default_region: us-east-1
+  include_git_submodules: true
+  instance_profile: UdagramWebServerInstanceProfile
+  platform_name: null
+  platform_version: null
+  profile: udacity
+  repository: null
+  sc: null
+  workspace_type: Application

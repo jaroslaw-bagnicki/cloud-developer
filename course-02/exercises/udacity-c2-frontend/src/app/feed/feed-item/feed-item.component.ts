@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { FeedItem } from '../models/feed-item.model';
 
 @Component({
@@ -9,8 +10,11 @@ import { FeedItem } from '../models/feed-item.model';
 })
 export class FeedItemComponent implements OnInit {
   @Input() feedItem: FeedItem;
+  mediaBucketUrl: string;
 
-  constructor() { }
+  constructor() {
+    this.mediaBucketUrl = environment.mediaBucketUrl;
+  }
 
   ngOnInit() {}
 
