@@ -46,3 +46,8 @@ Prevent requests without valid authentication headers.
 
 Add your own domain name and have it point to the running services (try adding a subdomain name to point to the processing server)
 > !NOTE: Domain names are not included in AWS’ free tier and will incur a cost.
+
+### Image Processor service host
+`udagram-image-processor-dev.us-east-1.elasticbeanstalk.com`
+#### Link with sample image
+`http://udagram-image-processor-dev.us-east-1.elasticbeanstalk.com/filteredimage?image_url=http://smmall.cheongju.go.kr/data/editor/goods/97/2020/04/90_79f7eb7d0b55d43cfc4a3f97c78452631534062.jpg`

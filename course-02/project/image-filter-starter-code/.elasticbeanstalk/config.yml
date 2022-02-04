@@ -1,7 +1,9 @@
 branch-defaults:
   default:
-    environment: null
+    environment: udagram-image-processor-dev
     group_suffix: null
+deploy:
+  artifact: ./www/archive.zip
 global:
   application_name: udagram-image-processor
   branch: null
@@ -12,7 +14,7 @@ global:
   instance_profile: null
   platform_name: null
   platform_version: null
-  profile: eb-cli
+  profile: udacity
   repository: null
   sc: null
   workspace_type: Application
